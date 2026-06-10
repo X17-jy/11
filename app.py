@@ -4,9 +4,10 @@
 """
 
 from flask import Flask, render_template
+from flask_frozen import Freezer
 
 app = Flask(__name__)
-
+freezer = Freezer(app)
 
 # 课程数据
 courses = [
@@ -63,26 +64,41 @@ projects = [
 
 
 @app.route('/')
+@app.route('/index.html')
 def index():
     """首页"""
     return render_template('index.html', courses=courses[:4], projects=projects[:3])
 
 
-@app.route('/courses')
+@app.route('/courses.html')
 def courses_page():
     """课程页"""
     return render_template('courses.html', courses=courses)
 
 
-@app.route('/projects')
+@app.route('/projects.html')
 def projects_page():
     """项目页"""
     return render_template('projects.html', projects=projects)
 
-@app.route('/pandas-projects')
+@app.route('/pandas-projects.html')
 def pandas_projects():
     """Pandas数据分析实战项目页"""
     return render_template('pandas-projects-page.html')
 
+
+@freezer.register_generator
+def url_generator():
+    yield '/'
+    yield '/index.html'
+    yield '/courses.html'
+    yield '/projects.html'
+    yield '/pandas-projects.html'
+
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == 'freeze':
+        freezer.freeze()
+    else:
+        app.run(debug=True, host='0.0.0.0', port=5000)

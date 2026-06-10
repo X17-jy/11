@@ -21,13 +21,16 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install gunicorn
+
+      - name: Build static site
+        run: |
+          python app.py freeze
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: your-project-name
-          directory: .
+          projectName: data-analysis-education-platform
+          directory: build
           branch: main
