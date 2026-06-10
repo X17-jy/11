@@ -1,9 +1,6 @@
 name = "data-analysis-education-platform"
 compatibility_date = "2024-01-01"
 
-[env]
-PYTHON_VERSION = "3.11"
-
 [pages]
-build_command = "pip install -r requirements.txt && python app.py freeze"
+build_command = ""
 build_output_dir = "build"
