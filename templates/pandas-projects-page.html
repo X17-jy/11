@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Pandas数据分析实战 - 10个精选项目{% endblock %}
+
+{% block extra_css %}
+<link href="{{ url_for('static', filename='css/pandas-projects.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<!-- 页面头部 -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1><i class="bi bi-code-slash me-2"></i>Pandas数据分析实战</h1>
+                <p class="lead mt-3 mb-0">10个精选实战项目 · 从入门到高级 · 完全在浏览器中运行代码</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 项目介绍 -->
+<section class="content-section bg-white">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="section-title text-center">项目特色</h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card animate-fadeInUp">
+                    <div class="icon">
+                        <i class="bi bi-laptop"></i>
+                    </div>
+                    <h3>浏览器直接运行</h3>
+                    <p>无需安装任何软件，打开即可在浏览器中编写和运行Python代码</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card animate-fadeInUp" style="animation-delay: 0.1s">
+                    <div class="icon">
+                        <i class="bi bi-layers"></i>
+                    </div>
+                    <h3>从入门到高级</h3>
+                    <p>10个项目覆盖不同难度，循序渐进掌握数据分析核心技能</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card animate-fadeInUp" style="animation-delay: 0.2s">
+                    <div class="icon">
+                        <i class="bi bi-check2-circle"></i>
+                    </div>
+                    <h3>真实业务场景</h3>
+                    <p>所有项目都基于真实业务场景，学完即可解决实际问题</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card animate-fadeInUp" style="animation-delay: 0.3s">
+                    <div class="icon">
+                        <i class="bi bi-code-square"></i>
+                    </div>
+                    <h3>完整可运行代码</h3>
+                    <p>每个项目都预置了完整的代码示例，直接运行查看效果</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 项目列表 -->
+<section class="content-section" id="pd-projects-container">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="section-title">
+                    <i class="bi bi-list-check me-2"></i>
+                    10个实战项目
+                </h2>
+                <p class="text-muted">点击任意项目卡片开始学习，在右侧编辑器中运行代码</p>
+            </div>
+        </div>
+        
+        <div class="row g-4" id="pd-project-list">
+            <!-- 项目卡片将由JS动态生成 -->
+        </div>
+    </div>
+</section>
+
+<!-- 编辑器容器 -->
+<div id="pd-editor-container" class="pd-editor-container">
+    <div class="pd-editor-header">
+        <div class="pd-editor-header-left">
+            <button class="pd-editor-back" onclick="closePdEditor()">
+                <i class="bi bi-arrow-left"></i> 返回列表
+            </button>
+            <span class="pd-editor-title" id="pd-editor-title">项目</span>
+        </div>
+        <div class="pd-editor-actions">
+            <button class="pd-editor-btn" onclick="resetPdCode()">
+                <i class="bi bi-arrow-counterclockwise"></i> 重置代码
+            </button>
+            <button class="pd-editor-btn pd-editor-btn-primary" onclick="runPdCode()">
+                <i class="bi bi-play-fill"></i> 运行代码
+            </button>
+        </div>
+    </div>
+    
+    <div class="pd-editor-body">
+        <div class="pd-editor-left">
+            <div class="pd-editor-section">
+                <div class="pd-editor-section-title">项目介绍</div>
+                <div id="pd-editor-description" style="font-size: 0.9rem; color: #475569; line-height: 1.6;"></div>
+            </div>
+            
+            <div class="pd-editor-section">
+                <div class="pd-editor-section-title">数据集</div>
+                <div class="pd-dataset-info" id="pd-editor-dataset"></div>
+            </div>
+            
+            <div class="pd-editor-section">
+                <div class="pd-editor-section-title">任务清单</div>
+                <ul class="pd-task-list" id="pd-editor-tasks"></ul>
+            </div>
+        </div>
+        
+        <div class="pd-editor-right">
+            <div class="pd-editor-code-container">
+                <div id="pd-monaco-editor"></div>
+            </div>
+            <div class="pd-editor-output-container">
+                <div class="pd-editor-output-header">
+                    <i class="bi bi-terminal"></i> 输出结果
+                </div>
+                <div class="pd-editor-output-content" id="pd-editor-output">
+                    <div class="pd-loading" id="pd-pyodide-loading">
+                        <div class="pd-loading-spinner"></div>
+                        <span>正在加载 Python 运行环境...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/pandas-projects.js') }}"></script>
+{% endblock %}

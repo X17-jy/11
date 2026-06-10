@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}项目 - 数据分析在线教育平台{% endblock %}
+
+{% block content %}
+<!-- 页面标题 -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="bi bi-kanban me-2"></i>实战项目</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 原项目列表 -->
+<section class="content-section">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="section-title">数据分析项目</h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            {% for project in projects %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="bi {{ project.icon }}"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text">{{ project.description }}</p>
+                        <div class="project-detail">
+                            <h6><i class="bi bi-database me-1"></i>数据集</h6>
+                            <p>{{ project.dataset }}</p>
+                            <h6><i class="bi bi-list-task me-1"></i>任务</h6>
+                            <ul class="task-list">
+                                {% for task in project.tasks %}
+                                <li>{{ task }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Pandas实战项目模块 -->
+{% include 'pandas-projects.html' %}
+
+<!-- 项目流程 -->
+<section class="content-section bg-white">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="section-title">项目学习流程</h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="value-card">
+                    <div class="icon">
+                        <i class="bi bi-1-circle"></i>
+                    </div>
+                    <h3>了解背景</h3>
+                    <p>明确业务场景和数据情况，理解项目目标。</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="value-card">
+                    <div class="icon">
+                        <i class="bi bi-2-circle"></i>
+                    </div>
+                    <h3>数据探索</h3>
+                    <p>加载数据，进行探索性分析，发现数据特征。</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="value-card">
+                    <div class="icon">
+                        <i class="bi bi-3-circle"></i>
+                    </div>
+                    <h3>数据分析</h3>
+                    <p>运用所学技能进行数据处理和建模分析。</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="value-card">
+                    <div class="icon">
+                        <i class="bi bi-4-circle"></i>
+                    </div>
+                    <h3>得出结论</h3>
+                    <p>可视化结果，总结分析结论，提出建议。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<link href="{{ url_for('static', filename='css/pandas-projects.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/pandas-projects.js') }}"></script>
+{% endblock %}

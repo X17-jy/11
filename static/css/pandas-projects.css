@@ -1,0 +1,356 @@
+/* ====================
+   Pandas实战项目模块
+   可直接嵌入现有网站
+   ==================== */
+
+/* 项目难度标签 */
+.pd-tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.pd-tag-easy {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.pd-tag-medium {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.pd-tag-hard {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.pd-tag-time {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+/* 项目列表卡片 */
+.pd-project-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #e5e7eb;
+    height: 100%;
+}
+
+.pd-project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.12);
+    border-color: #2563eb;
+}
+
+.pd-project-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.pd-project-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.pd-project-desc {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+}
+
+.pd-project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.pd-project-tasks {
+    font-size: 0.85rem;
+    color: #475569;
+    line-height: 1.5;
+}
+
+.pd-project-tasks strong {
+    color: #1e293b;
+}
+
+/* 编辑器容器 */
+.pd-editor-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #f8fafc;
+    z-index: 10000;
+}
+
+.pd-editor-container.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 编辑器头部 */
+.pd-editor-header {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.pd-editor-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pd-editor-back {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.pd-editor-back:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.pd-editor-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.pd-editor-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.pd-editor-btn {
+    background: white;
+    color: #2563eb;
+    border: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.pd-editor-btn:hover {
+    background: #eff6ff;
+}
+
+.pd-editor-btn-primary {
+    background: #16a34a;
+    color: white;
+}
+
+.pd-editor-btn-primary:hover {
+    background: #15803d;
+}
+
+/* 编辑器主体 */
+.pd-editor-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* 左侧面板 */
+.pd-editor-left {
+    width: 280px;
+    background: white;
+    border-right: 1px solid #e5e7eb;
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.pd-editor-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+}
+
+.pd-editor-section {
+    margin-bottom: 1.5rem;
+}
+
+.pd-dataset-info {
+    background: #f8fafc;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.pd-dataset-info strong {
+    color: #1e293b;
+}
+
+.pd-task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pd-task-list li {
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
+    color: #475569;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.pd-task-list li:last-child {
+    border-bottom: none;
+}
+
+.pd-task-list li::before {
+    content: "•";
+    color: #2563eb;
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+/* 右侧面板 */
+.pd-editor-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 编辑器区域 */
+.pd-editor-code-container {
+    height: 50%;
+    border-bottom: 1px solid #e5e7eb;
+    position: relative;
+}
+
+#pd-monaco-editor {
+    width: 100%;
+    height: 100%;
+}
+
+/* 输出区域 */
+.pd-editor-output-container {
+    height: 50%;
+    background: #1e293b;
+    color: #e2e8f0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.pd-editor-output-header {
+    padding: 0.75rem 1.25rem;
+    background: #334155;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #94a3b8;
+    border-bottom: 1px solid #475569;
+}
+
+.pd-editor-output-content {
+    flex: 1;
+    padding: 1rem 1.25rem;
+    overflow-y: auto;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.pd-editor-output-content pre {
+    margin: 0;
+    font-family: inherit;
+}
+
+.pd-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2rem;
+}
+
+.pd-loading-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: pd-spin 0.8s linear infinite;
+}
+
+@keyframes pd-spin {
+    to { transform: rotate(360deg); }
+}
+
+.pd-error {
+    color: #fca5a5;
+}
+
+.pd-success {
+    color: #86efac;
+}
+
+/* 响应式 */
+@media (max-width: 1024px) {
+    .pd-editor-body {
+        flex-direction: column;
+    }
+    .pd-editor-left {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+}
+
+@media (max-width: 768px) {
+    .pd-editor-header {
+        padding: 0.75rem 1rem;
+    }
+    .pd-editor-title {
+        font-size: 1rem;
+    }
+    .pd-editor-btn {
+        padding: 0.5rem 0.9rem;
+        font-size: 0.8rem;
+    }
+}

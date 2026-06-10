@@ -1,0 +1,77 @@
+<!-- ====================
+   Pandas实战项目列表卡片
+   可直接嵌入现有页面
+   ==================== -->
+<div id="pd-projects-container" class="content-section">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="section-title">
+                    <i class="bi bi-code-slash me-2"></i>
+                    Pandas数据分析实战
+                </h2>
+                <p class="text-muted">10个真实项目，从入门到高级，在线写代码、运行、看结果</p>
+            </div>
+        </div>
+        
+        <div class="row g-4" id="pd-project-list">
+            <!-- 项目卡片将由JS动态生成 -->
+        </div>
+    </div>
+</div>
+
+<!-- 编辑器容器 -->
+<div id="pd-editor-container" class="pd-editor-container">
+    <div class="pd-editor-header">
+        <div class="pd-editor-header-left">
+            <button class="pd-editor-back" onclick="closePdEditor()">
+                <i class="bi bi-arrow-left"></i> 返回列表
+            </button>
+            <span class="pd-editor-title" id="pd-editor-title">项目</span>
+        </div>
+        <div class="pd-editor-actions">
+            <button class="pd-editor-btn" onclick="resetPdCode()">
+                <i class="bi bi-arrow-counterclockwise"></i> 重置
+            </button>
+            <button class="pd-editor-btn pd-editor-btn-primary" onclick="runPdCode()">
+                <i class="bi bi-play-fill"></i> 运行代码
+            </button>
+        </div>
+    </div>
+    
+    <div class="pd-editor-body">
+        <div class="pd-editor-left">
+            <div class="pd-editor-section">
+                <div class="pd-editor-section-title">项目介绍</div>
+                <div id="pd-editor-description" style="font-size: 0.9rem; color: #475569; line-height: 1.6;"></div>
+            </div>
+            
+            <div class="pd-editor-section">
+                <div class="pd-editor-section-title">数据集</div>
+                <div class="pd-dataset-info" id="pd-editor-dataset"></div>
+            </div>
+            
+            <div class="pd-editor-section">
+                <div class="pd-editor-section-title">任务清单</div>
+                <ul class="pd-task-list" id="pd-editor-tasks"></ul>
+            </div>
+        </div>
+        
+        <div class="pd-editor-right">
+            <div class="pd-editor-code-container">
+                <div id="pd-monaco-editor"></div>
+            </div>
+            <div class="pd-editor-output-container">
+                <div class="pd-editor-output-header">
+                    <i class="bi bi-terminal"></i> 输出结果
+                </div>
+                <div class="pd-editor-output-content" id="pd-editor-output">
+                    <div class="pd-loading" id="pd-pyodide-loading">
+                        <div class="pd-loading-spinner"></div>
+                        <span>正在加载 Pyodide 运行环境...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
