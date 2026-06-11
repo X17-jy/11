@@ -2,5 +2,5 @@ name = "datainsight"
 compatibility_date = "2024-01-01"
 
 [pages]
-  build_command = "echo 'Build completed'"
-  publish_dir = "."
+  build_command = "python3 export_static.py"
+  publish_dir = "dist"
