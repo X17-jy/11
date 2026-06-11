@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目 · DataInsight 商务数据分析教育平台</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="/" class="logo">
+        <span class="logo-mark">D</span>
+        <span class="logo-text">DataInsight</span>
+        <span class="logo-sub">商务数据分析教育平台</span>
+      </a>
+      <nav class="main-nav">
+        <a href="/" class="nav-link">首页</a>
+        <a href="/courses.html" class="nav-link">课程</a>
+        <a href="/projects.html" class="nav-link active">项目</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <section class="page-header">
+      <div class="container">
+        <span class="banner-eyebrow">PROJECTS</span>
+        <h1 class="page-title">实战项目</h1>
+        <p class="page-subtitle">真实业务场景，完整的数据分析项目实战</p>
+      </div>
+    </section>
+
+    <section class="projects-section">
+      <div class="container">
+        <div class="filter-bar">
+          <button class="filter-btn active" data-level="all">全部</button>
+          <button class="filter-btn" data-level="入门">入门</button>
+          <button class="filter-btn" data-level="进阶">进阶</button>
+        </div>
+        <div class="projects-grid" id="projects-grid">
+          <div class="loading">加载中...</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-logo">DataInsight</div>
+      <div class="footer-desc">商务数据分析在线教育平台 · 用数据驱动商业决策</div>
+    </div>
+  </footer>
+
+  <script>
+    let allProjects = [];
+
+    async function loadProjects() {
+      try {
+        const res = await fetch('/api/projects');
+        const json = await res.json();
+        if (!json.success) return;
+        allProjects = json.data;
+        renderProjects(allProjects);
+      } catch (err) {
+        console.error('加载项目失败:', err);
+        document.getElementById('projects-grid').innerHTML = '<div class="error">加载失败，请刷新重试</div>';
+      }
+    }
+
+    function renderProjects(projects) {
+      const grid = document.getElementById('projects-grid');
+      if (projects.length === 0) {
+        grid.innerHTML = '<div class="empty">暂无项目</div>';
+        return;
+      }
+      grid.innerHTML = projects.map(p => `
+        <a href="/project.html?id=${p.id}" class="project-card">
+          <div class="project-icon">${getIndustryIcon(p.industry)}</div>
+          <div class="project-meta-top">
+            <span class="project-industry">${p.industry}</span>
+            <span class="project-level">${p.level}</span>
+          </div>
+          <h3 class="project-title">${p.name}</h3>
+          <p class="project-desc">${p.summary}</p>
+          <div class="project-footer">
+            <span class="project-scale">📊 ${p.scale}</span>
+            <span class="project-link">查看详情 →</span>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    function getIndustryIcon(industry) {
+      const icons = {
+        '电商零售': '🛒',
+        '互联网产品': '🌐',
+        '零售连锁': '🏪',
+        '移动应用': '📱'
+      };
+      return icons[industry] || '💡';
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const level = btn.dataset.level;
+        if (level === 'all') {
+          renderProjects(allProjects);
+        } else {
+          renderProjects(allProjects.filter(p => p.level === level));
+        }
+      });
+    });
+
+    loadProjects();
+  </script>
+
+</body>
+</html>

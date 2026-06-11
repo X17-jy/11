@@ -1,8 +1,15 @@
 {
   "name": "datainsight",
   "version": "1.0.0",
-  "description": "商务数据分析在线教育平台",
+  "description": "DataInsight 商务数据分析在线教育平台 - Cloudflare Pages 部署",
+  "private": true,
   "scripts": {
-    "build": "python3 export_static.py"
+    "dev": "wrangler pages dev ./public --port 8788",
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "wrangler pages deploy ./public",
+    "preview": "wrangler pages dev ./public"
+  },
+  "devDependencies": {
+    "wrangler": "^3.78.0"
   }
 }

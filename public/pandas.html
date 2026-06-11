@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pandas 数据分析训练 · DataInsight</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+  <style>
+    .pandas-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; min-height: 600px; }
+    .exercise-pane, .editor-pane { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
+    .exercise-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+    .exercise-item { padding: 12px 16px; background: #f8fafc; border-radius: 8px; cursor: pointer; transition: all .2s; border: 2px solid transparent; }
+    .exercise-item:hover { background: #e8f4fd; }
+    .exercise-item.active { background: #e8f4fd; border-color: #1E5BB8; }
+    .exercise-item-title { font-weight: 600; color: #2C3E50; font-size: 14px; margin-bottom: 4px; }
+    .exercise-item-meta { font-size: 12px; color: #8492A6; }
+    .code-editor { width: 100%; min-height: 280px; font-family: 'Monaco', 'Consolas', monospace; font-size: 14px; padding: 16px; background: #1E293B; color: #E2E8F0; border: none; border-radius: 8px; resize: vertical; line-height: 1.6; }
+    .code-output { background: #0F172A; color: #E2E8F0; padding: 16px; border-radius: 8px; min-height: 120px; max-height: 300px; overflow: auto; font-family: 'Monaco', 'Consolas', monospace; font-size: 13px; white-space: pre-wrap; }
+    .output-success { color: #4ade80; }
+    .output-error { color: #f87171; }
+    .editor-actions { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+    .btn-run { background: #1E5BB8; color: #fff; }
+    .btn-run:hover { background: #154790; }
+    .btn-solution { background: #f59e0b; color: #fff; }
+    .btn-reset { background: #6b7280; color: #fff; }
+    .editor-status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; margin-left: 8px; }
+    .status-loading { background: #fef3c7; color: #92400e; }
+    .status-ready { background: #d1fae5; color: #065f46; }
+    .status-running { background: #dbeafe; color: #1e40af; }
+    .exercise-content h2 { font-size: 24px; margin-bottom: 12px; }
+    .exercise-meta-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .meta-tag { padding: 4px 12px; background: #e8f4fd; color: #1E5BB8; border-radius: 12px; font-size: 13px; }
+    .hint-box { background: #fef9e7; border-left: 4px solid #f59e0b; padding: 12px 16px; margin: 16px 0; border-radius: 4px; font-size: 14px; }
+    .expected-box { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 12px 16px; margin: 16px 0; border-radius: 4px; font-size: 14px; }
+    .prev-next-nav { display: flex; justify-content: space-between; margin-top: 24px; gap: 12px; }
+    .nav-btn { flex: 1; padding: 12px; text-align: center; border-radius: 8px; background: #f1f5f9; color: #2C3E50; text-decoration: none; transition: all .2s; }
+    .nav-btn:hover { background: #e8f4fd; }
+    .nav-btn.disabled { opacity: 0.4; pointer-events: none; }
+    @media (max-width: 768px) { .pandas-layout { grid-template-columns: 1fr; } .exercise-list { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="/" class="logo">
+        <span class="logo-mark">D</span>
+        <span class="logo-text">DataInsight</span>
+        <span class="logo-sub">商务数据分析教育平台</span>
+      </a>
+      <nav class="main-nav">
+        <a href="/" class="nav-link">首页</a>
+        <a href="/courses.html" class="nav-link">课程</a>
+        <a href="/projects.html" class="nav-link">项目</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <section class="page-header">
+      <div class="container">
+        <span class="banner-eyebrow">PANDAS TRAINING</span>
+        <h1 class="page-title">Pandas 数据分析实战训练</h1>
+        <p class="page-subtitle">10 个精选实战项目 · 从入门到进阶 · 浏览器直接运行 Python 代码 <span class="editor-status status-loading" id="pyodide-status">⏳ 加载 Python 运行时...</span></p>
+      </div>
+    </section>
+
+    <section class="pandas-section">
+      <div class="container">
+
+        <!-- 练习列表 -->
+        <div class="exercise-list" id="exercise-list"></div>
+
+        <!-- 练习内容 + 代码编辑器 -->
+        <div class="pandas-layout">
+          <div class="exercise-pane">
+            <div class="exercise-content" id="exercise-content">
+              <div class="loading">加载练习中...</div>
+            </div>
+          </div>
+          <div class="editor-pane">
+            <h3 style="margin-bottom: 12px; color: #1E5BB8;">💻 代码编辑器</h3>
+            <textarea id="code-editor" class="code-editor" spellcheck="false"></textarea>
+            <div class="editor-actions">
+              <button id="btn-run" class="btn btn-run" disabled>▶ 运行代码</button>
+              <button id="btn-solution" class="btn btn-solution">💡 查看答案</button>
+              <button id="btn-reset" class="btn btn-reset">↺ 重置代码</button>
+            </div>
+            <h4 style="margin: 16px 0 8px; color: #2C3E50;">📤 运行结果：</h4>
+            <div id="code-output" class="code-output">代码运行结果将显示在这里...</div>
+
+            <div class="prev-next-nav">
+              <a id="prev-btn" class="nav-btn">← 上一题</a>
+              <a id="next-btn" class="nav-btn">下一题 →</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-logo">DataInsight</div>
+      <div class="footer-desc">商务数据分析在线教育平台</div>
+    </div>
+  </footer>
+
+  <script>
+    let pyodide = null;
+    let allExercises = [];
+    let currentExercise = null;
+
+    // 加载 Pyodide
+    async function initPyodide() {
+      try {
+        pyodide = await loadPyodide({
+          indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/"
+        });
+        await pyodide.loadPackage(['pandas', 'numpy']);
+        document.getElementById('pyodide-status').className = 'editor-status status-ready';
+        document.getElementById('pyodide-status').textContent = '✅ Python 运行时就绪';
+        document.getElementById('btn-run').disabled = false;
+      } catch (err) {
+        document.getElementById('pyodide-status').className = 'editor-status';
+        document.getElementById('pyodide-status').style.background = '#fee2e2';
+        document.getElementById('pyodide-status').style.color = '#991b1b';
+        document.getElementById('pyodide-status').textContent = '❌ 加载失败';
+        console.error('Pyodide 加载失败:', err);
+      }
+    }
+
+    // 加载练习列表
+    async function loadExerciseList() {
+      try {
+        const res = await fetch('/api/pandas');
+        const json = await res.json();
+        if (!json.success) return;
+        allExercises = json.data;
+        renderExerciseList();
+
+        // 默认加载第一个练习
+        const params = new URLSearchParams(window.location.search);
+        const id = parseInt(params.get('id')) || 1;
+        loadExercise(id);
+      } catch (err) {
+        console.error('加载练习列表失败:', err);
+      }
+    }
+
+    function renderExerciseList() {
+      const list = document.getElementById('exercise-list');
+      list.innerHTML = allExercises.map(e => `
+        <div class="exercise-item" data-id="${e.id}">
+          <div class="exercise-item-title">${e.id}. ${e.title}</div>
+          <div class="exercise-item-meta">${e.level} · ⏱ ${e.duration}</div>
+        </div>
+      `).join('');
+
+      list.querySelectorAll('.exercise-item').forEach(item => {
+        item.addEventListener('click', () => {
+          loadExercise(parseInt(item.dataset.id));
+        });
+      });
+    }
+
+    async function loadExercise(id) {
+      try {
+        const res = await fetch('/api/pandas/' + id);
+        if (res.status === 404) {
+          document.getElementById('exercise-content').innerHTML = '<div class="error">练习不存在</div>';
+          return;
+        }
+        const json = await res.json();
+        if (!json.success) return;
+        currentExercise = json.data;
+
+        // 更新 URL
+        const url = new URL(window.location);
+        url.searchParams.set('id', id);
+        window.history.pushState({}, '', url);
+
+        // 高亮当前项
+        document.querySelectorAll('.exercise-item').forEach(item => {
+          item.classList.toggle('active', parseInt(item.dataset.id) === id);
+        });
+
+        // 渲染内容
+        document.getElementById('exercise-content').innerHTML = `
+          <div class="exercise-meta-bar">
+            <span class="meta-tag">📊 ${currentExercise.level}</span>
+            <span class="meta-tag">⏱ ${currentExercise.duration}</span>
+            <span class="meta-tag">练习 ${currentExercise.id} / ${json.total}</span>
+          </div>
+          <h2>${currentExercise.title}</h2>
+          <p style="color: #5A6B7D; margin-bottom: 16px;">${currentExercise.description}</p>
+          <div class="detail-section">
+            <h3 style="font-size: 16px; margin-bottom: 8px;">📋 任务说明</h3>
+            <p>${currentExercise.instruction}</p>
+          </div>
+          <div class="hint-box">
+            <strong>💡 提示：</strong>${currentExercise.hint}
+          </div>
+          <div class="expected-box">
+            <strong>🎯 预期输出：</strong>${currentExercise.expectedOutput}
+          </div>
+        `;
+
+        // 设置初始代码
+        document.getElementById('code-editor').value = currentExercise.starterCode;
+        document.getElementById('code-output').textContent = '代码运行结果将显示在这里...';
+        document.getElementById('code-output').className = 'code-output';
+
+        // 更新导航
+        document.getElementById('prev-btn').classList.toggle('disabled', id === 1);
+        document.getElementById('prev-btn').onclick = id > 1 ? () => loadExercise(id - 1) : null;
+        document.getElementById('next-btn').classList.toggle('disabled', id === json.total);
+        document.getElementById('next-btn').onclick = id < json.total ? () => loadExercise(id + 1) : null;
+      } catch (err) {
+        console.error('加载练习失败:', err);
+      }
+    }
+
+    // 运行代码
+    async function runCode() {
+      if (!pyodide) {
+        document.getElementById('code-output').textContent = '⏳ Python 运行时尚未加载完成，请稍候...';
+        return;
+      }
+      const code = document.getElementById('code-editor').value;
+      const output = document.getElementById('code-output');
+      output.className = 'code-output';
+      output.textContent = '⏳ 正在运行...';
+
+      try {
+        // 捕获 print 输出
+        pyodide.setStdout({
+          batched: (text) => {
+            output.textContent += text + '\n';
+          }
+        });
+        pyodide.setStderr({
+          batched: (text) => {
+            output.textContent += text + '\n';
+          }
+        });
+
+        let result = await pyodide.runPythonAsync(code);
+
+        // 如果代码最后一行是表达式，尝试显示其值
+        const lines = code.trim().split('\n').filter(l => l.trim() && !l.trim().startsWith('#'));
+        const lastLine = lines[lines.length - 1];
+        if (lastLine && !lastLine.startsWith('print') && !lastLine.includes('=') && result !== undefined) {
+          const str = await pyodide.runPythonAsync(`
+import pandas as pd
+import io
+if hasattr(result, 'to_string'):
+    buf = io.StringIO()
+    pd.set_option('display.max_rows', 50)
+    pd.set_option('display.max_columns', 20)
+    pd.set_option('display.width', 200)
+    pd.set_option('display.max_colwidth', 50)
+    result_str = str(result)
+else:
+    result_str = str(result)
+result_str
+`);
+          output.textContent += '\n--- 返回值 ---\n' + str;
+        }
+
+        if (output.textContent === '⏳ 正在运行...') {
+          output.textContent = '✅ 代码执行完成（无输出）';
+        } else {
+          const finalText = output.textContent.replace('⏳ 正在运行...\n', '');
+          output.textContent = finalText;
+          output.className = 'code-output output-success';
+        }
+      } catch (err) {
+        output.textContent = '❌ 错误：\n' + err.message;
+        output.className = 'code-output output-error';
+      }
+    }
+
+    // 绑定按钮
+    document.getElementById('btn-run').addEventListener('click', runCode);
+    document.getElementById('btn-solution').addEventListener('click', () => {
+      if (currentExercise) {
+        document.getElementById('code-editor').value = currentExercise.solution;
+      }
+    });
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      if (currentExercise) {
+        document.getElementById('code-editor').value = currentExercise.starterCode;
+        const output = document.getElementById('code-output');
+        output.textContent = '代码运行结果将显示在这里...';
+        output.className = 'code-output';
+      }
+    });
+
+    // 启动
+    initPyodide();
+    loadExerciseList();
+  </script>
+
+</body>
+</html>
