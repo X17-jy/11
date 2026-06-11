@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 try:
     from flask_frozen import Freezer
-    freezer = Freezer(app)
+    freezer = Freezer(app, output_dir='build')
     HAS_FREEZER = True
 except ImportError:
     HAS_FREEZER = False
