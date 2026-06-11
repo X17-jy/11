@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程 - 数据分析在线教育平台</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- 自定义样式 -->
+    <link href="/static/css/style.css" rel="stylesheet">
+    <!-- 页面专属样式 -->
+    
+    
+    <!-- 全局浮动编辑器样式 -->
+    <style>
+    /* 浮动代码编辑器样式 */
+    .float-code-editor {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 750px;
+        max-width: calc(100vw - 40px);
+        background: #1e1e1e;
+        border-radius: 12px;
+        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        animation: slideUp 0.3s ease;
+        border: 1px solid #333;
+    }
+    .float-code-editor.active {
+        display: flex;
+    }
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .float-editor-header {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .float-editor-title {
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .float-editor-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    .float-editor-btn {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .float-editor-btn:hover { background: rgba(255,255,255,0.3); }
+    .float-editor-btn-run { background: #10b981; }
+    .float-editor-btn-run:hover { background: #059669; }
+    .float-editor-close {
+        background: #ef4444;
+        color: white;
+        border: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+    .float-editor-close:hover { background: #dc2626; }
+    
+    .float-editor-body { 
+        display: flex; 
+        flex: 1;
+        min-height: 0;
+        height: 400px;
+    }
+    .float-editor-code { 
+        flex: 1; 
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #333;
+        background: #1e1e1e;
+    }
+    .float-editor-code-header {
+        background: #2d2d2d;
+        padding: 8px 12px;
+        font-size: 12px;
+        color: #888;
+        border-bottom: 1px solid #333;
+    }
+    #float-code-input {
+        flex: 1;
+        background: #1e1e1e;
+        color: #d4d4d4;
+        border: none;
+        padding: 12px;
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: 13px;
+        line-height: 1.5;
+        resize: none;
+        outline: none;
+        tab-size: 4;
+    }
+    #float-code-input:focus {
+        background: #252526;
+    }
+    .float-editor-output {
+        width: 280px;
+        flex-shrink: 0;
+        background: #1e1e1e;
+        display: flex;
+        flex-direction: column;
+    }
+    .float-editor-output-header {
+        background: #2d2d2d;
+        padding: 8px 12px;
+        font-size: 12px;
+        color: #888;
+        border-bottom: 1px solid #333;
+    }
+    #float-editor-output {
+        flex: 1;
+        padding: 12px;
+        overflow: auto;
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: 13px;
+        line-height: 1.5;
+        color: #d4d4d4;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    
+    /* 浮动打开按钮 */
+    .float-editor-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9998;
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .float-editor-toggle:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 25px rgba(37, 99, 235, 0.5);
+    }
+    .float-editor-toggle.active {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+    }
+    
+    .output-success { color: #10b981; }
+    .output-error { color: #ef4444; }
+    .output-loading { color: #f59e0b; }
+    
+    @media (max-width: 768px) {
+        .float-code-editor {
+            width: calc(100vw - 20px);
+            right: 10px;
+            bottom: 70px;
+            height: 450px;
+        }
+        .float-editor-body { flex-direction: column; height: auto; }
+        .float-editor-code { height: 200px; border-right: none; border-bottom: 1px solid #333; }
+        .float-editor-output { width: 100%; height: 150px; }
+    }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-graph-up"></i>
+                数据分析平台
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link " href="/">
+                            <i class="bi bi-house-door me-1"></i>首页
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/courses.html">
+                            <i class="bi bi-book me-1"></i>课程
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/projects.html">
+                            <i class="bi bi-kanban me-1"></i>项目
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/pandas-projects.html">
+                            <i class="bi bi-code-slash me-1"></i>Pandas实战
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    
+<!-- 页面标题 -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="bi bi-book me-2"></i>数据分析课程</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 课程列表 -->
+<section class="content-section">
+    <div class="container">
+        <div class="row g-4">
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="bi bi-code-slash"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Python数据分析基础</h5>
+                        <p class="card-text">学习Python数据分析的基本概念和方法，掌握数据读取、清洗、转换的基本技能，为后续深入学习打下坚实基础。</p>
+                        <div class="mt-auto">
+                            
+                            <span class="tag tag-primary">Pandas</span>
+                            
+                            <span class="tag tag-primary">入门</span>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="bi bi-table"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Pandas数据处理实战</h5>
+                        <p class="card-text">深入掌握Pandas库进行数据清洗、转换、聚合和分析，学习处理缺失数据、数据透视表等高级操作。</p>
+                        <div class="mt-auto">
+                            
+                            <span class="tag tag-primary">Pandas</span>
+                            
+                            <span class="tag tag-primary">进阶</span>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="bi bi-bar-chart-line"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">数据可视化与图表制作</h5>
+                        <p class="card-text">使用Matplotlib和Seaborn创建专业的统计图表，包括折线图、柱状图、散点图、热力图等，让数据讲故事。</p>
+                        <div class="mt-auto">
+                            
+                            <span class="tag tag-primary">可视化</span>
+                            
+                            <span class="tag tag-primary">图表</span>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">商务数据分析实战</h5>
+                        <p class="card-text">运用数据分析技能解决真实商务问题，包括销售分析、客户分析、市场分析等，提升业务决策能力。</p>
+                        <div class="mt-auto">
+                            
+                            <span class="tag tag-primary">商务分析</span>
+                            
+                            <span class="tag tag-primary">实战</span>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+<!-- 课程特色 -->
+<section class="content-section bg-white">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="section-title">课程特色</h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="value-card">
+                    <div class="icon">
+                        <i class="bi bi-play-circle"></i>
+                    </div>
+                    <h3>视频+实战</h3>
+                    <p>每个知识点配有实战练习，边学边练，快速掌握。</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="value-card">
+                    <div class="icon">
+                        <i class="bi bi-code-square"></i>
+                    </div>
+                    <h3>代码可运行</h3>
+                    <p>所有代码均可直接运行，支持在线练习环境。</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="value-card">
+                    <div class="icon">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </div>
+                    <h3>持续更新</h3>
+                    <p>课程内容持续更新，紧跟行业发展和技术趋势。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-1">&copy; 2024 数据分析在线教育平台 | 面向商务数据分析与应用专业学生</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">
+                        <i class="bi bi-person-badge me-1"></i>
+                        广东科学技术职业学院 · 商学院 · 商务数据分析与应用专业 · 学生 xjy
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 浮动代码编辑器 -->
+    <div class="float-code-editor" id="float-code-editor">
+        <div class="float-editor-header">
+            <div class="float-editor-title">
+                <i class="bi bi-code-square"></i>
+                Python 在线编辑器
+            </div>
+            <div class="float-editor-actions">
+                <button class="float-editor-btn" onclick="resetFloatCode()">
+                    <i class="bi bi-arrow-clockwise"></i> 重置
+                </button>
+                <button class="float-editor-btn float-editor-btn-run" onclick="runFloatCode()">
+                    <i class="bi bi-play-fill"></i> 运行代码
+                </button>
+                <button class="float-editor-close" onclick="toggleFloatEditor()">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        </div>
+        <div class="float-editor-body">
+            <div class="float-editor-code">
+                <div class="float-editor-code-header">
+                    <i class="bi bi-file-code"></i> 代码编辑区
+                </div>
+                <textarea id="float-code-input" placeholder="在这里输入Python代码..."></textarea>
+            </div>
+            <div class="float-editor-output">
+                <div class="float-editor-output-header">
+                    <i class="bi bi-terminal"></i> 运行结果
+                </div>
+                <div id="float-editor-output">
+                    <span class="output-loading">点击"运行代码"执行...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 浮动打开按钮 -->
+    <button class="float-editor-toggle" id="float-editor-toggle" onclick="toggleFloatEditor()">
+        <i class="bi bi-code-square"></i>
+        <span>打开编辑器</span>
+    </button>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 浮动编辑器脚本 -->
+    <script>
+    let floatPyodideLoaded = false;
+    let floatPyodideInstance = null;
+
+    const defaultFloatCode = `import pandas as pd
+import numpy as np
+
+# 创建示例数据
+data = {
+    'name': ['张三', '李四', '王五', '赵六', '钱七'],
+    'age': [25, 30, 35, 28, 42],
+    'city': ['北京', '上海', '广州', '深圳', '杭州'],
+    'salary': [8000, 12000, 15000, 10000, 20000]
+}
+
+df = pd.DataFrame(data)
+
+# 显示数据
+print("员工数据表：")
+print(df)
+print()
+
+# 基本统计
+print("=" * 30)
+print("薪资统计：")
+print(f"平均薪资: {df['salary'].mean():.2f}元")
+print(f"最高薪资: {df['salary'].max()}元")
+print(f"最低薪资: {df['salary'].min()}元")
+print("=" * 30)
+`;
+
+    // 初始化代码
+    document.getElementById('float-code-input').value = defaultFloatCode;
+
+    function toggleFloatEditor() {
+        const editor = document.getElementById('float-code-editor');
+        const btn = document.getElementById('float-editor-toggle');
+        
+        if (editor.classList.contains('active')) {
+            editor.classList.remove('active');
+            btn.classList.remove('active');
+            btn.innerHTML = '<i class="bi bi-code-square"></i><span>打开编辑器</span>';
+        } else {
+            editor.classList.add('active');
+            btn.classList.add('active');
+            btn.innerHTML = '<i class="bi bi-x-lg"></i><span>关闭编辑器</span>';
+        }
+    }
+
+    async function loadFloatPyodide() {
+        const outputDiv = document.getElementById('float-editor-output');
+        if (floatPyodideLoaded) return true;
+        
+        outputDiv.innerHTML = '<span class="output-loading">正在加载Python环境（约20MB）...</span>';
+        
+        try {
+            if (typeof window.loadPyodide !== 'function') {
+                await new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js';
+                    script.onload = () => resolve();
+                    script.onerror = () => reject(new Error('Pyodide加载失败'));
+                    document.head.appendChild(script);
+                });
+            }
+            
+            outputDiv.innerHTML = '<span class="output-loading">正在初始化Python运行时...</span>';
+            floatPyodideInstance = await window.loadPyodide({
+                indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/'
+            });
+            
+            outputDiv.innerHTML = '<span class="output-loading">正在加载numpy和pandas库...</span>';
+            await floatPyodideInstance.loadPackage(['numpy', 'pandas']);
+            
+            floatPyodideLoaded = true;
+            outputDiv.innerHTML = '<span class="output-success">✓ 环境就绪！可以运行代码了</span>';
+            return true;
+        } catch (error) {
+            outputDiv.innerHTML = `<span class="output-error">❌ 加载失败: ${error.message}</span>`;
+            return false;
+        }
+    }
+
+    async function runFloatCode() {
+        const outputDiv = document.getElementById('float-editor-output');
+        const codeInput = document.getElementById('float-code-input');
+        const code = codeInput.value;
+        
+        if (!floatPyodideLoaded) {
+            const loaded = await loadFloatPyodide();
+            if (!loaded) return;
+        }
+        
+        outputDiv.innerHTML = '<span class="output-loading">⏳ 正在运行代码...</span>';
+        
+        try {
+            floatPyodideInstance.runPython(`
+import sys
+from io import StringIO
+_old_stdout = sys.stdout
+_old_stderr = sys.stderr
+sys.stdout = _mystdout = StringIO()
+sys.stderr = _mystderr = StringIO()
+`);
+            floatPyodideInstance.runPython(code);
+            floatPyodideInstance.runPython(`
+_stdout_content = _mystdout.getvalue()
+_stderr_content = _mystderr.getvalue()
+sys.stdout = _old_stdout
+sys.stderr = _old_stderr
+`);
+            
+            const stdout = floatPyodideInstance.globals.get('_stdout_content');
+            const stderr = floatPyodideInstance.globals.get('_stderr_content');
+            
+            let output = '';
+            if (stdout && stdout !== 'undefined') {
+                output += stdout;
+            }
+            if (stderr && stderr !== 'undefined') {
+                output += '<span class="output-error">' + stderr + '</span>';
+            }
+            
+            if (output.trim()) {
+                outputDiv.innerHTML = '<pre style="margin:0;white-space:pre-wrap;">' + escapeHtml(output) + '</pre>';
+            } else {
+                outputDiv.innerHTML = '<span class="output-success">✓ 代码运行成功（无输出）</span>';
+            }
+        } catch (error) {
+            outputDiv.innerHTML = '<span class="output-error">❌ 运行错误:\n' + escapeHtml(error.message) + '</span>';
+        }
+    }
+
+    function resetFloatCode() {
+        document.getElementById('float-code-input').value = defaultFloatCode;
+        document.getElementById('float-editor-output').innerHTML = '<span class="output-success">✓ 代码已重置为示例代码</span>';
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    </script>
+    
+    <!-- 页面专属脚本 -->
+    
+</body>
+</html>
