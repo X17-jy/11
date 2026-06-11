@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+
+{% block title %}首页 - DataInsight 商务数据分析教育平台{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Banner 平台介绍 -->
+  <section class="banner">
+    <span class="banner-eyebrow">DATA ANALYSIS · BUSINESS INSIGHT</span>
+    <h1 class="banner-title">用 Python 读懂商业数据<br>让分析能力成为你的核心竞争力</h1>
+    <p class="banner-subtitle">
+      专为商务数据分析与应用专业学生打造的一站式学习平台。系统化课程体系 + 真实业务项目实战，
+      从 Pandas 基础到综合分析报告，循序渐进掌握数据分析师所需的核心技能。
+    </p>
+    <div class="banner-actions">
+      <a class="btn btn-primary" href="{{ url_for('pandas_training') }}">开始 Pandas 训练</a>
+      <a class="btn btn-outline" href="{{ url_for('courses') }}">浏览课程</a>
+    </div>
+  </section>
+
+  <!-- 自我介绍 -->
+  <section class="intro-section">
+    <div class="intro-card">
+      <div class="intro-avatar">
+        <span class="avatar-icon">👨‍🎓</span>
+      </div>
+      <div class="intro-content">
+        <h3 class="intro-name">xjy</h3>
+        <p class="intro-title">广东科学技术职业学院 · 商学院</p>
+        <p class="intro-major">商务数据分析与应用专业</p>
+        <p class="intro-desc">
+          热爱数据分析，致力于用数据驱动商业决策。通过这个平台分享学习心得，与大家一起成长！
+        </p>
+      </div>
+      <div class="intro-badge">学生</div>
+    </div>
+  </section>
+
+  <!-- Pandas 训练项目推荐 -->
+  <section class="training-highlight">
+    <div class="training-highlight-content">
+      <div class="training-highlight-badge">🔥 热门推荐</div>
+      <h2 class="training-highlight-title">Pandas 数据分析实战训练</h2>
+      <p class="training-highlight-desc">
+        10 个精选实战项目，从入门到进阶，完全在浏览器中运行代码。<br>
+        无需安装环境，打开即练，从零开始掌握数据分析核心技能。
+      </p>
+      <div class="training-highlight-features">
+        <span class="feature-item">✅ 浏览器直接运行</span>
+        <span class="feature-item">✅ 零配置环境</span>
+        <span class="feature-item">✅ 即时查看结果</span>
+        <span class="feature-item">✅ 参考答案</span>
+      </div>
+      <a class="btn-training" href="{{ url_for('pandas_training') }}">
+        立即开始训练 →
+      </a>
+    </div>
+    <div class="training-highlight-visual">
+      <div class="code-window">
+        <div class="code-window-header">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <span class="file-name">pandas_training.py</span>
+        </div>
+        <pre class="code-window-body"><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="cmt"># 读取销售数据</span>
+df = pd.read_csv(<span class="str">'sales.csv'</span>)
+
+<span class="cmt"># 按类别统计销售额</span>
+result = df.groupby(<span class="str">'category'</span>).sum()
+<span class="kw">print</span>(result)</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 平台数据展示 -->
+  <section class="stats">
+    {% for s in stats %}
+    <div class="stat-card">
+      <div class="stat-value">{{ s.value }}</div>
+      <div class="stat-label">{{ s.label }}</div>
+    </div>
+    {% endfor %}
+  </section>
+
+  <!-- 课程推荐 -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">精选课程推荐</h2>
+        <p class="section-subtitle">从基础到进阶，构建完整的 Python 数据分析能力体系</p>
+      </div>
+      <a class="section-more" href="{{ url_for('courses') }}">查看全部课程</a>
+    </div>
+    <div class="card-grid">
+      {% for course in recommended_courses %}
+      <a class="card" href="{{ url_for('course_detail', course_id=course.id) }}">
+        <span class="card-tag">{{ course.category }}</span>
+        <h3 class="card-title">{{ course.name }}</h3>
+        <div class="card-meta">
+          <span>难度：{{ course.level }}</span>
+          <span>时长：{{ course.duration }}</span>
+        </div>
+        <p class="card-summary">{{ course.summary }}</p>
+        <span class="card-link">查看课程详情</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- 项目推荐 -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">实战项目推荐</h2>
+        <p class="section-subtitle">真实业务场景，从数据到洞察的完整项目练习</p>
+      </div>
+      <a class="section-more" href="{{ url_for('projects') }}">查看全部项目</a>
+    </div>
+    <div class="card-grid">
+      {% for project in recommended_projects %}
+      <a class="card" href="{{ url_for('project_detail', project_id=project.id) }}">
+        <span class="card-tag">{{ project.industry }}</span>
+        <h3 class="card-title">{{ project.name }}</h3>
+        <div class="card-meta">
+          <span>数据规模：{{ project.scale }}</span>
+          <span>难度：{{ project.level }}</span>
+        </div>
+        <p class="card-summary">{{ project.summary }}</p>
+        <span class="card-link">查看项目详情</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+
+</div>
+
+<style>
+/* 自我介绍区块 */
+.intro-section {
+  margin-bottom: 32px;
+}
+.intro-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.intro-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+}
+.intro-avatar {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #e8f4fd 0%, #d4e5f7 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 12px rgba(30, 91, 184, 0.1);
+}
+.avatar-icon {
+  font-size: 40px;
+}
+.intro-content {
+  flex: 1;
+}
+.intro-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 4px 0;
+}
+.intro-title {
+  font-size: 14px;
+  color: var(--color-primary);
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+.intro-major {
+  font-size: 13px;
+  color: var(--color-text-soft);
+  margin: 0 0 8px 0;
+}
+.intro-desc {
+  font-size: 14px;
+  color: var(--color-text-soft);
+  line-height: 1.6;
+  margin: 0;
+}
+.intro-badge {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #1F9D55 0%, #15803D 100%);
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+/* 训练项目推荐区块 */
+.training-highlight {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  background: linear-gradient(135deg, #f8fafc 0%, #e8f4fd 100%);
+  border: 1px solid #d4e5f7;
+  border-radius: 20px;
+  padding: 48px;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.training-highlight::before {
+  content: "";
+  position: absolute;
+  right: -80px;
+  top: -80px;
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, rgba(30, 91, 184, 0.08) 0%, rgba(44, 123, 229, 0.05) 100%);
+  border-radius: 50%;
+}
+.training-highlight-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+.training-highlight-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+.training-highlight-desc {
+  font-size: 15px;
+  color: var(--color-text-soft);
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+.training-highlight-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.feature-item {
+  font-size: 13px;
+  color: var(--color-text);
+  background: #fff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #e3e8ef;
+}
+.btn-training {
+  display: inline-block;
+  padding: 14px 32px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  border-radius: 10px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 14px rgba(30, 91, 184, 0.3);
+}
+.btn-training:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 91, 184, 0.4);
+  color: #fff;
+}
+
+/* 代码窗口 */
+.code-window {
+  background: #1a1d24;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+.code-window-header {
+  background: #2d323c;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.dot.red { background: #ff5f56; }
+.dot.yellow { background: #ffbd2e; }
+.dot.green { background: #27c93f; }
+.file-name {
+  margin-left: 12px;
+  color: #8b949e;
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.code-window-body {
+  padding: 20px;
+  margin: 0;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #e6edf3;
+}
+.code-window-body .kw { color: #ff7b72; }
+.code-window-body .str { color: #a5d6ff; }
+.code-window-body .cmt { color: #8b949e; }
+
+@media (max-width: 900px) {
+  .training-highlight {
+    grid-template-columns: 1fr;
+    padding: 32px;
+  }
+  .training-highlight-visual {
+    display: none;
+  }
+}
+</style>
+{% endblock %}

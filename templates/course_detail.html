@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.name }} - DataInsight{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="detail-card">
+    <div class="detail-breadcrumb">
+      <a href="{{ url_for('index') }}">首页</a> &nbsp;/&nbsp;
+      <a href="{{ url_for('courses') }}">课程</a> &nbsp;/&nbsp;
+      <span>{{ course.name }}</span>
+    </div>
+
+    <div class="detail-header">
+      <span class="card-tag">{{ course.category }}</span>
+      <h1 class="detail-title">{{ course.name }}</h1>
+      <div class="detail-meta">
+        <span class="detail-meta-item">难度：<strong>{{ course.level }}</strong></span>
+        <span class="detail-meta-item">时长：<strong>{{ course.duration }}</strong></span>
+        <span class="detail-meta-item">分类：<strong>{{ course.category }}</strong></span>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h2 class="detail-section-title">课程简介</h2>
+      <p>{{ course.summary }}</p>
+    </div>
+
+    <div class="detail-section">
+      <h2 class="detail-section-title">学习目标</h2>
+      <ul>
+        {% for obj in course.objectives %}
+        <li>{{ obj }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="detail-section">
+      <h2 class="detail-section-title">章节大纲</h2>
+      <ol>
+        {% for chap in course.chapters %}
+        <li>{{ chap }}</li>
+        {% endfor %}
+      </ol>
+    </div>
+
+    <div class="detail-section">
+      <h2 class="detail-section-title">适合人群</h2>
+      <ul>
+        {% for a in course.audience %}
+        <li>{{ a }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="detail-section">
+      <h2 class="detail-section-title">学习收获</h2>
+      <ul>
+        {% for o in course.outcomes %}
+        <li>{{ o }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div style="margin-top: 24px;">
+      <a class="btn btn-solid" href="{{ url_for('courses') }}">返回课程列表</a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

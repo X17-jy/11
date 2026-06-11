@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}项目 - DataInsight{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="page-header">
+    <div class="page-eyebrow">PROJECTS</div>
+    <h1 class="page-title">商务数据分析实战项目</h1>
+    <p class="page-desc">
+      精选真实业务场景下的数据分析项目，涵盖电商、互联网、零售、移动应用等多个行业。
+      每个项目包含完整业务背景、真实数据集与分阶段任务，帮助你积累可写入简历的项目作品。
+    </p>
+  </div>
+
+  <div class="card-grid">
+    {% for project in projects %}
+    <a class="card" href="{{ url_for('project_detail', project_id=project.id) }}">
+      <span class="card-tag">{{ project.industry }}</span>
+      <h3 class="card-title">{{ project.name }}</h3>
+      <div class="card-meta">
+        <span>数据规模：{{ project.scale }}</span>
+        <span>难度：{{ project.level }}</span>
+      </div>
+      <p class="card-summary">{{ project.summary }}</p>
+      <span class="card-link">查看项目详情</span>
+    </a>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

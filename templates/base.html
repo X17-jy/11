@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}DataInsight · 商务数据分析在线教育平台{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- 顶部导航栏 -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="{{ url_for('index') }}" class="logo">
+        <span class="logo-mark">D</span>
+        <span class="logo-text">DataInsight</span>
+        <span class="logo-sub">商务数据分析教育平台</span>
+      </a>
+      <nav class="main-nav">
+        {% set endpoint = request.endpoint or '' %}
+        <a href="{{ url_for('index') }}" class="nav-link {% if endpoint == 'index' %}active{% endif %}">首页</a>
+        <a href="{{ url_for('courses') }}" class="nav-link {% if endpoint in ['courses', 'course_detail'] %}active{% endif %}">课程</a>
+        <a href="{{ url_for('projects') }}" class="nav-link {% if endpoint in ['projects', 'project_detail'] %}active{% endif %}">项目</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 主体内容 -->
+  <main class="site-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-col">
+        <div class="footer-logo">DataInsight</div>
+        <p class="footer-desc">面向商务数据分析与应用专业学生的在线教育平台</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-title">学习导航</div>
+        <a class="footer-link" href="{{ url_for('index') }}">首页</a>
+        <a class="footer-link" href="{{ url_for('courses') }}">课程</a>
+        <a class="footer-link" href="{{ url_for('projects') }}">项目</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-title">联系我们</div>
+        <p class="footer-text">邮箱：support@datainsight.edu</p>
+        <p class="footer-text">电话：400-000-0000</p>
+        <p class="footer-text">地址：某市某区数据科学园 A 座</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <span>&copy; 2026 DataInsight 商务数据分析教育平台 · 保留所有权利</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

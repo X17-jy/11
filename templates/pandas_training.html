@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+
+{% block title %}Pandas 数据分析实战训练 - DataInsight{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- 训练项目 Banner -->
+  <section class="training-banner">
+    <div class="training-banner-content">
+      <span class="training-badge">在线编程 · 浏览器运行</span>
+      <h1 class="training-title">Pandas 数据分析实战训练</h1>
+      <p class="training-subtitle">
+        10 个精选实战项目，从入门到进阶，完全在浏览器中运行代码。<br>
+        无需安装环境，打开即练，从零开始掌握数据分析核心技能。
+      </p>
+      <div class="training-stats">
+        <div class="training-stat">
+          <span class="stat-num">10</span>
+          <span class="stat-label">实战项目</span>
+        </div>
+        <div class="training-stat">
+          <span class="stat-num">4</span>
+          <span class="stat-label">入门级</span>
+        </div>
+        <div class="training-stat">
+          <span class="stat-num">5</span>
+          <span class="stat-label">进阶级</span>
+        </div>
+        <div class="training-stat">
+          <span class="stat-num">1</span>
+          <span class="stat-label">挑战级</span>
+        </div>
+      </div>
+    </div>
+    <div class="training-banner-visual">
+      <div class="code-preview">
+        <div class="code-header">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <span class="code-title">pandas_demo.py</span>
+        </div>
+        <pre class="code-body"><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+df = pd.read_csv(<span class="str">'sales.csv'</span>)
+result = df.groupby(<span class="str">'category'</span>).sum()
+<span class="kw">print</span>(result)</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 学习路径 -->
+  <section class="learning-path">
+    <h2 class="section-title">学习路径</h2>
+    <div class="path-timeline">
+      <div class="path-stage">
+        <div class="stage-marker beginner">入门</div>
+        <div class="stage-desc">掌握 DataFrame 基础操作</div>
+      </div>
+      <div class="path-arrow">→</div>
+      <div class="path-stage">
+        <div class="stage-marker intermediate">进阶</div>
+        <div class="stage-desc">数据清洗、分组、合并</div>
+      </div>
+      <div class="path-arrow">→</div>
+      <div class="path-stage">
+        <div class="stage-marker advanced">挑战</div>
+        <div class="stage-desc">综合实战项目</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 练习列表 -->
+  <section class="exercises-section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">10 个精选实战项目</h2>
+        <p class="section-subtitle">按顺序完成，循序渐进掌握 Pandas 核心技能</p>
+      </div>
+    </div>
+    
+    <div class="exercises-list">
+      {% for ex in exercises %}
+      <a href="{{ url_for('pandas_exercise', exercise_id=ex.id) }}" class="exercise-card">
+        <div class="exercise-number">{{ '%02d' % ex.id }}</div>
+        <div class="exercise-content">
+          <div class="exercise-header">
+            <h3 class="exercise-title">{{ ex.title }}</h3>
+            <span class="exercise-level level-{{ ex.level }}">{{ ex.level }}</span>
+          </div>
+          <p class="exercise-desc">{{ ex.description }}</p>
+          <div class="exercise-meta">
+            <span class="exercise-duration">⏱ {{ ex.duration }}</span>
+          </div>
+        </div>
+        <div class="exercise-arrow">→</div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- 功能说明 -->
+  <section class="features-section">
+    <h2 class="section-title">为什么选择在线训练</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <h3 class="feature-title">零配置</h3>
+        <p class="feature-desc">无需安装 Python 或配置环境，打开浏览器即可开始编程</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-title">即时运行</h3>
+        <p class="feature-desc">代码在浏览器中直接运行，实时查看输出结果</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💡</div>
+        <h3 class="feature-title">智能提示</h3>
+        <p class="feature-desc">提供代码提示和参考答案，帮助你快速学习</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3 class="feature-title">真实数据</h3>
+        <p class="feature-desc">使用贴近真实的业务数据，学以致用</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+/* 训练 Banner */
+.training-banner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  background: linear-gradient(135deg, #1E5BB8 0%, #2C7BE5 50%, #4F86D1 100%);
+  border-radius: 20px;
+  padding: 48px 56px;
+  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.training-banner::before {
+  content: "";
+  position: absolute;
+  right: -100px;
+  top: -100px;
+  width: 400px;
+  height: 400px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+}
+.training-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+.training-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.training-subtitle {
+  font-size: 16px;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+.training-stats {
+  display: flex;
+  gap: 32px;
+}
+.training-stat {
+  text-align: center;
+}
+.stat-num {
+  display: block;
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+}
+.training-stat .stat-label {
+  font-size: 13px;
+  color: rgba(255,255,255,0.8);
+}
+
+/* 代码预览 */
+.code-preview {
+  background: #1a1d24;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.code-header {
+  background: #2d323c;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot.red { background: #ff5f56; }
+.dot.yellow { background: #ffbd2e; }
+.dot.green { background: #27c93f; }
+.code-title {
+  margin-left: 12px;
+  color: #8b949e;
+  font-size: 13px;
+}
+.code-body {
+  padding: 20px;
+  margin: 0;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #e6edf3;
+}
+.code-body .kw { color: #ff7b72; }
+.code-body .str { color: #a5d6ff; }
+
+/* 学习路径 */
+.learning-path {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 48px;
+}
+.path-timeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 24px;
+}
+.path-stage {
+  text-align: center;
+}
+.stage-marker {
+  display: inline-block;
+  padding: 8px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.stage-marker.beginner { background: #d4edda; color: #155724; }
+.stage-marker.intermediate { background: #fff3cd; color: #856404; }
+.stage-marker.advanced { background: #f8d7da; color: #721c24; }
+.stage-desc {
+  font-size: 13px;
+  color: var(--color-text-soft);
+}
+.path-arrow {
+  font-size: 24px;
+  color: var(--color-text-muted);
+}
+
+/* 练习列表 */
+.exercises-section {
+  margin-bottom: 48px;
+}
+.exercises-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.exercise-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  transition: all 0.2s;
+  gap: 20px;
+}
+.exercise-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+  transform: translateX(4px);
+}
+.exercise-number {
+  width: 48px;
+  height: 48px;
+  background: var(--color-bg);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+.exercise-content {
+  flex: 1;
+}
+.exercise-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.exercise-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+.exercise-level {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+.level-入门 { background: #d4edda; color: #155724; }
+.level-进阶 { background: #fff3cd; color: #856404; }
+.level-挑战 { background: #f8d7da; color: #721c24; }
+.exercise-desc {
+  font-size: 14px;
+  color: var(--color-text-soft);
+  margin: 0 0 8px 0;
+}
+.exercise-meta {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+.exercise-arrow {
+  font-size: 20px;
+  color: var(--color-text-muted);
+  transition: transform 0.2s;
+}
+.exercise-card:hover .exercise-arrow {
+  transform: translateX(4px);
+  color: var(--color-primary);
+}
+
+/* 功能说明 */
+.features-section {
+  margin-bottom: 48px;
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 24px;
+}
+.feature-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  text-align: center;
+  transition: all 0.2s;
+}
+.feature-card:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+}
+.feature-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+.feature-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+.feature-desc {
+  font-size: 13px;
+  color: var(--color-text-soft);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .training-banner {
+    grid-template-columns: 1fr;
+    padding: 32px;
+  }
+  .training-banner-visual { display: none; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .training-stats { flex-wrap: wrap; gap: 16px; }
+  .path-timeline { flex-direction: column; }
+  .path-arrow { transform: rotate(90deg); }
+  .features-grid { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
