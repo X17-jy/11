@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pandas 数据分析训练 · DataInsight</title>
   <link rel="stylesheet" href="/css/style.css">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
   <style>
     .pandas-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; min-height: 600px; }
@@ -112,12 +115,22 @@
     let pyodide = null;
     let allExercises = [];
     let currentExercise = null;
+    // 收集所有 Python 输出的缓冲区
+    let outputBuffer = [];
+    let errorBuffer = [];
 
     // 加载 Pyodide
     async function initPyodide() {
       try {
         pyodide = await loadPyodide({
           indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/"
+        });
+        // 关键：通过 setStdout/setStderr 捕获 Python 输出
+        pyodide.setStdout({
+          batched: (msg) => { outputBuffer.push(msg); }
+        });
+        pyodide.setStderr({
+          batched: (msg) => { errorBuffer.push(msg); }
         });
         await pyodide.loadPackage(['pandas', 'numpy']);
         document.getElementById('pyodide-status').className = 'editor-status status-ready';
@@ -232,41 +245,38 @@
       const code = document.getElementById('code-editor').value;
       const output = document.getElementById('code-output');
       output.className = 'code-output';
-      output.textContent = '⏳ 正在运行...\n';
+      output.textContent = '⏳ 正在运行...';
       output.scrollTop = output.scrollHeight;
 
+      // 清空缓冲区
+      outputBuffer = [];
+      errorBuffer = [];
+
       try {
-        // 清空之前的输出
-        let stdout = '';
-        let stderr = '';
-
-        pyodide.setStdout({
-          batched: (text) => { stdout += text + '\n'; }
-        });
-        pyodide.setStderr({
-          batched: (text) => { stderr += text + '\n'; }
-        });
-
-        // 运行代码
+        // 直接运行用户代码；Pyodide 会把 stdout/stderr 推入缓冲区
         await pyodide.runPythonAsync(code);
 
-        // 构建输出
-        let result = '';
-        if (stderr) {
-          result = '❌ 错误：\n' + stderr;
+        const stdout = outputBuffer.join('');
+        const stderr = errorBuffer.join('');
+
+        if (stderr && stderr.trim()) {
+          output.textContent = '❌ 错误：\n' + stderr + (stdout ? '\n\n📤 标准输出：\n' + stdout : '');
           output.className = 'code-output output-error';
-        } else if (stdout.trim()) {
-          result = stdout.trim();
+        } else if (stdout && stdout.trim()) {
+          output.textContent = stdout;
           output.className = 'code-output output-success';
         } else {
-          result = '✅ 代码执行完成（无输出）\n💡 提示：使用 print() 函数查看结果';
+          output.textContent = '✅ 代码执行完成（无输出）\n💡 提示：使用 print() 函数查看结果';
           output.className = 'code-output output-success';
         }
 
-        output.textContent = result;
-
       } catch (err) {
-        output.textContent = '❌ 错误：\n' + err.message;
+        const stdout = outputBuffer.join('');
+        let msg = '❌ 错误：\n' + (err.message || err);
+        if (stdout && stdout.trim()) {
+          msg += '\n\n📤 标准输出：\n' + stdout;
+        }
+        output.textContent = msg;
         output.className = 'code-output output-error';
       }
       output.scrollTop = output.scrollHeight;
