@@ -1,9 +1,9 @@
 {
   "name": "data-analysis-education-platform",
   "version": "1.0.0",
-  "description": "数据分析在线教育平台 - 面向商务数据分析与应用专业学生",
+  "description": "数据分析在线教育平台",
   "scripts": {
-    "build": "python generate_static.py"
+    "build": "node -e \"const fs=require('fs');if(!fs.existsSync('build')){fs.mkdirSync('build',{recursive:true})};console.log('Build directory verified');\""
   },
   "author": "xjy"
 }

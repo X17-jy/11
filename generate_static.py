@@ -61,16 +61,11 @@ build_dir = 'build'
 if os.path.exists(build_dir):
     shutil.rmtree(build_dir)
 os.makedirs(build_dir)
-os.makedirs(f'{build_dir}/css', exist_ok=True)
-os.makedirs(f'{build_dir}/js', exist_ok=True)
+os.makedirs(f'{build_dir}/static/css', exist_ok=True)
+os.makedirs(f'{build_dir}/static/js', exist_ok=True)
 
 def render_page(path, output_name, **context):
     """渲染模板并写入build目录"""
-    with app.test_request_context(path=path):
-        from flask import globals as _flask_globals
-        html = _flask_globals.request.get_data()
-        # 使用正确的请求上下文来渲染
-        pass
     # 直接用 client 获取渲染结果
     with app.test_client() as client:
         response = client.get(path)
@@ -86,16 +81,26 @@ render_page('/courses/', 'courses.html')
 render_page('/projects/', 'projects.html')
 render_page('/pandas-projects/', 'pandas-projects.html')
 
-# 复制静态资源
+# 复制静态资源到 static/ 目录（匹配url_for生成的/static/xxx路径
+if os.path.exists('static/css/style.css'):
+    shutil.copy('static/css/style.css', f'{build_dir}/static/css/style.css')
+    print(f'Copied: {build_dir}/static/css/style.css')
+if os.path.exists('static/css/pandas-projects.css'):
+    shutil.copy('static/css/pandas-projects.css', f'{build_dir}/static/css/pandas-projects.css')
+    print(f'Copied: {build_dir}/static/css/pandas-projects.css')
+if os.path.exists('static/js/pandas-projects.js'):
+    shutil.copy('static/js/pandas-projects.js', f'{build_dir}/static/js/pandas-projects.js')
+    print(f'Copied: {build_dir}/static/js/pandas-projects.js')
+
+# 同时在根目录也放一份，支持直接访问根路径的CSS/JS（便于某些路由场景
+os.makedirs(f'{build_dir}/css', exist_ok=True)
+os.makedirs(f'{build_dir}/js', exist_ok=True)
 if os.path.exists('static/css/style.css'):
     shutil.copy('static/css/style.css', f'{build_dir}/css/style.css')
-    print(f'Copied: {build_dir}/css/style.css')
 if os.path.exists('static/css/pandas-projects.css'):
     shutil.copy('static/css/pandas-projects.css', f'{build_dir}/css/pandas-projects.css')
-    print(f'Copied: {build_dir}/css/pandas-projects.css')
 if os.path.exists('static/js/pandas-projects.js'):
     shutil.copy('static/js/pandas-projects.js', f'{build_dir}/js/pandas-projects.js')
-    print(f'Copied: {build_dir}/js/pandas-projects.js')
 
 print(f'\nStatic site generation complete!')
 print(f'Build directory contents: {os.listdir(build_dir)}')
