@@ -1,3 +1,4 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
@@ -7,4 +8,15 @@ __pycache__/
 .venv/
 venv/
 env/
+app.py
+generate_static.py
+requirements.txt
+templates/
+static/
+
+# System
 .DS_Store
+
+# IDE
+.idea/
+.vscode/

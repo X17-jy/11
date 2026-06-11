@@ -1,9 +1,11 @@
 {
   "name": "data-analysis-education-platform",
   "version": "1.0.0",
-  "description": "数据分析在线教育平台",
+  "description": "数据分析在线教育平台 - 静态站点",
+  "main": "build/index.html",
   "scripts": {
-    "build": "node -e \"const fs=require('fs');if(!fs.existsSync('build')){fs.mkdirSync('build',{recursive:true})};console.log('Build directory verified');\""
+    "build": "echo 'Static files already generated in build/'"
   },
-  "author": "xjy"
+  "author": "xjy",
+  "license": "MIT"
 }
