@@ -232,55 +232,44 @@
       const code = document.getElementById('code-editor').value;
       const output = document.getElementById('code-output');
       output.className = 'code-output';
-      output.textContent = '⏳ 正在运行...';
+      output.textContent = '⏳ 正在运行...\n';
+      output.scrollTop = output.scrollHeight;
 
       try {
-        // 捕获 print 输出
+        // 清空之前的输出
+        let stdout = '';
+        let stderr = '';
+
         pyodide.setStdout({
-          batched: (text) => {
-            output.textContent += text + '\n';
-          }
+          batched: (text) => { stdout += text + '\n'; }
         });
         pyodide.setStderr({
-          batched: (text) => {
-            output.textContent += text + '\n';
-          }
+          batched: (text) => { stderr += text + '\n'; }
         });
 
-        let result = await pyodide.runPythonAsync(code);
+        // 运行代码
+        await pyodide.runPythonAsync(code);
 
-        // 如果代码最后一行是表达式，尝试显示其值
-        const lines = code.trim().split('\n').filter(l => l.trim() && !l.trim().startsWith('#'));
-        const lastLine = lines[lines.length - 1];
-        if (lastLine && !lastLine.startsWith('print') && !lastLine.includes('=') && result !== undefined) {
-          const str = await pyodide.runPythonAsync(`
-import pandas as pd
-import io
-if hasattr(result, 'to_string'):
-    buf = io.StringIO()
-    pd.set_option('display.max_rows', 50)
-    pd.set_option('display.max_columns', 20)
-    pd.set_option('display.width', 200)
-    pd.set_option('display.max_colwidth', 50)
-    result_str = str(result)
-else:
-    result_str = str(result)
-result_str
-`);
-          output.textContent += '\n--- 返回值 ---\n' + str;
-        }
-
-        if (output.textContent === '⏳ 正在运行...') {
-          output.textContent = '✅ 代码执行完成（无输出）';
+        // 构建输出
+        let result = '';
+        if (stderr) {
+          result = '❌ 错误：\n' + stderr;
+          output.className = 'code-output output-error';
+        } else if (stdout.trim()) {
+          result = stdout.trim();
+          output.className = 'code-output output-success';
         } else {
-          const finalText = output.textContent.replace('⏳ 正在运行...\n', '');
-          output.textContent = finalText;
+          result = '✅ 代码执行完成（无输出）\n💡 提示：使用 print() 函数查看结果';
           output.className = 'code-output output-success';
         }
+
+        output.textContent = result;
+
       } catch (err) {
         output.textContent = '❌ 错误：\n' + err.message;
         output.className = 'code-output output-error';
       }
+      output.scrollTop = output.scrollHeight;
     }
 
     // 绑定按钮

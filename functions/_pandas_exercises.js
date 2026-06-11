@@ -10,12 +10,16 @@ export const PANDAS_EXERCISES = [
     hint: "使用 pd.DataFrame() 函数，传入字典或列表作为参数。",
     starterCode: `import pandas as pd
 
-# 在下方编写代码，创建一个学生信息的 DataFrame
+# 创建一个学生信息的 DataFrame
+data = {
+    'name': ['张三', '李四', '王五'],
+    'age': [20, 22, 21],
+    'score': [85, 92, 78]
+}
+df = pd.DataFrame(data)
 
-
-
-# 显示 DataFrame
-# df
+# 使用 print() 显示结果
+print(df)
 `,
     solution: `import pandas as pd
 
@@ -26,7 +30,7 @@ data = {
     'score': [85, 92, 78]
 }
 df = pd.DataFrame(data)
-df
+print(df)
 `,
     expectedOutput: "一个包含 3 行 3 列的 DataFrame"
   },
@@ -54,9 +58,9 @@ date,product,quantity,price
 2024-01-04,苹果,110,5.5
 '''
 
-# 在下方编写代码，读取 CSV 并显示前 5 行
-
-
+# 读取 CSV 并显示前 5 行
+df = pd.read_csv(StringIO(csv_data.strip()))
+print(df.head())
 `,
     solution: `import pandas as pd
 from io import StringIO
@@ -74,7 +78,7 @@ date,product,quantity,price
 '''
 
 df = pd.read_csv(StringIO(csv_data.strip()))
-df.head()
+print(df.head())
 `,
     expectedOutput: "显示包含日期、产品、数量、价格的数据表"
   },
@@ -97,9 +101,9 @@ data = {
 }
 df = pd.DataFrame(data)
 
-# 在下方编写代码，筛选年龄>25且薪资>8000的员工
-
-
+# 筛选年龄>25且薪资>8000的员工
+result = df[(df['age'] > 25) & (df['salary'] > 8000)]
+print(result)
 `,
     solution: `import pandas as pd
 
@@ -113,7 +117,7 @@ df = pd.DataFrame(data)
 
 # 筛选年龄>25且薪资>8000的员工
 result = df[(df['age'] > 25) & (df['salary'] > 8000)]
-result
+print(result)
 `,
     expectedOutput: "筛选出张伟、李明、刘强三位员工"
   },
@@ -136,12 +140,11 @@ data = {
 }
 df = pd.DataFrame(data)
 
-# 在下方编写代码：
-# 1. 计算总分列
-# 2. 按总分降序排列
-# 3. 添加排名列
-
-
+# 计算总分并排序
+df['total'] = df['math'] + df['english'] + df['chinese']
+df = df.sort_values('total', ascending=False)
+df['rank'] = range(1, len(df) + 1)
+print(df)
 `,
     solution: `import pandas as pd
 
@@ -160,8 +163,8 @@ df['total'] = df['math'] + df['english'] + df['chinese']
 df = df.sort_values('total', ascending=False)
 
 # 添加排名
-df['rank'] = df['total'].rank(method='min', ascending=False).astype(int)
-df
+df['rank'] = range(1, len(df) + 1)
+print(df)
 `,
     expectedOutput: "李四排名第一，总分265"
   },
@@ -185,13 +188,23 @@ data = {
 }
 df = pd.DataFrame(data)
 
-# 在下方编写代码处理缺失值：
-# 1. 查看缺失值情况
-# 2. 删除 status 完全为空的行
-# 3. 用均值填充 amount 缺失
-# 4. 用'未知'填充 city 缺失
+# 查看缺失值
+print("处理前：")
+print(df)
+print("\\n缺失值统计：")
+print(df.isnull().sum())
 
+# 删除 status 为空的行
+df = df.dropna(subset=['status'])
 
+# 用均值填充 amount
+df['amount'] = df['amount'].fillna(df['amount'].mean())
+
+# 用'未知'填充 city
+df['city'] = df['city'].fillna('未知')
+
+print("\\n处理后：")
+print(df)
 `,
     solution: `import pandas as pd
 import numpy as np
@@ -205,7 +218,9 @@ data = {
 df = pd.DataFrame(data)
 
 # 查看缺失值
-print("缺失值统计：")
+print("处理前：")
+print(df)
+print("\\n缺失值统计：")
 print(df.isnull().sum())
 
 # 删除 status 为空的行
@@ -217,7 +232,8 @@ df['amount'] = df['amount'].fillna(df['amount'].mean())
 # 用'未知'填充 city
 df['city'] = df['city'].fillna('未知')
 
-df
+print("\\n处理后：")
+print(df)
 `,
     expectedOutput: "处理后的数据无缺失值"
   },
@@ -247,10 +263,17 @@ data = {
 df = pd.DataFrame(data)
 df['total'] = df['quantity'] * df['unit_price']
 
-# 在下方编写代码：
-# 按类别分组，统计总销售额、平均单价、订单数量
-
-
+# 按类别分组统计
+result = df.groupby('category').agg({
+    'total': 'sum',
+    'unit_price': 'mean',
+    'order_id': 'count'
+}).rename(columns={
+    'total': '总销售额',
+    'unit_price': '平均单价',
+    'order_id': '订单数量'
+})
+print(result)
 `,
     solution: `import pandas as pd
 
@@ -279,7 +302,7 @@ result = df.groupby('category').agg({
     'unit_price': '平均单价',
     'order_id': '订单数量'
 })
-result
+print(result)
 `,
     expectedOutput: "电子产品总销售额最高"
   },
@@ -309,10 +332,9 @@ customers = pd.DataFrame({
     'level': ['VIP', '普通', 'VIP', '普通']
 })
 
-# 在下方编写代码：
-# 合并订单表和客户表，显示订单详情和客户信息
-
-
+# 合并订单和客户信息
+result = pd.merge(orders, customers, on='customer_id', how='left')
+print(result)
 `,
     solution: `import pandas as pd
 
@@ -332,7 +354,7 @@ customers = pd.DataFrame({
 
 # 合并订单和客户信息
 result = pd.merge(orders, customers, on='customer_id', how='left')
-result
+print(result)
 `,
     expectedOutput: "合并后显示订单和客户完整信息"
   },
@@ -355,10 +377,17 @@ data = {
 }
 df = pd.DataFrame(data)
 
-# 在下方编写代码：
-# 创建透视表：行为地区，列为产品，值为销售额总和
-
-
+# 创建透视表
+pivot = pd.pivot_table(
+    df, 
+    values='sales', 
+    index='region', 
+    columns='product', 
+    aggfunc='sum',
+    margins=True,
+    margins_name='总计'
+)
+print(pivot)
 `,
     solution: `import pandas as pd
 
@@ -380,7 +409,7 @@ pivot = pd.pivot_table(
     margins=True,
     margins_name='总计'
 )
-pivot
+print(pivot)
 `,
     expectedOutput: "透视表显示各地区各产品销售额"
   },
@@ -402,13 +431,18 @@ data = {
 }
 df = pd.DataFrame(data)
 
-# 在下方编写代码：
-# 1. 将 date 转为 datetime 类型
-# 2. 设置 date 为索引
-# 3. 按月重采样统计销售额
-# 4. 计算环比增长率
+# 转换日期类型
+df['date'] = pd.to_datetime(df['date'])
 
+# 设置日期为索引
+df = df.set_index('date')
 
+# 按月重采样统计
+monthly = df.resample('M').sum()
+
+# 计算环比增长率
+monthly['growth_rate'] = monthly['sales'].pct_change() * 100
+print(monthly)
 `,
     solution: `import pandas as pd
 
@@ -430,8 +464,7 @@ monthly = df.resample('M').sum()
 
 # 计算环比增长率
 monthly['growth_rate'] = monthly['sales'].pct_change() * 100
-
-monthly
+print(monthly)
 `,
     expectedOutput: "显示月度销售额和环比增长率"
   },
@@ -466,14 +499,28 @@ order_date,product,category,quantity,unit_price
 2024-04-15,肉类,食品,8,35
 '''
 
-# 在下方编写代码完成分析：
-# 1. 读取数据并计算销售额
-# 2. 数据概览（行数、列数、数据类型）
-# 3. 按类别统计销售额
-# 4. 销售额 TOP3 产品
-# 5. 月度销售趋势
+# 读取数据
+df = pd.read_csv(StringIO(csv_data.strip()))
+df['sales'] = df['quantity'] * df['unit_price']
 
+# 数据概览
+print("=== 数据概览 ===")
+print(f"行数: {len(df)}, 列数: {len(df.columns)}")
+print(df.dtypes)
 
+# 各类别销售额
+print("\\n=== 各类别销售额 ===")
+print(df.groupby('category')['sales'].sum().sort_values(ascending=False))
+
+# TOP3 产品
+print("\\n=== 销售额 TOP3 产品 ===")
+print(df.groupby('product')['sales'].sum().nlargest(3))
+
+# 月度趋势
+print("\\n=== 月度销售趋势 ===")
+df['order_date'] = pd.to_datetime(df['order_date'])
+df['month'] = df['order_date'].dt.to_period('M')
+print(df.groupby('month')['sales'].sum())
 `,
     solution: `import pandas as pd
 from io import StringIO
@@ -504,24 +551,21 @@ df['sales'] = df['quantity'] * df['unit_price']
 # 2. 数据概览
 print("=== 数据概览 ===")
 print(f"行数: {len(df)}, 列数: {len(df.columns)}")
-print(f"数据类型:\\n{df.dtypes}")
+print(df.dtypes)
 
 # 3. 按类别统计销售额
 print("\\n=== 各类别销售额 ===")
-category_sales = df.groupby('category')['sales'].sum().sort_values(ascending=False)
-print(category_sales)
+print(df.groupby('category')['sales'].sum().sort_values(ascending=False))
 
 # 4. 销售额 TOP3 产品
 print("\\n=== 销售额 TOP3 产品 ===")
-top3 = df.groupby('product')['sales'].sum().nlargest(3)
-print(top3)
+print(df.groupby('product')['sales'].sum().nlargest(3))
 
 # 5. 月度销售趋势
 print("\\n=== 月度销售趋势 ===")
 df['order_date'] = pd.to_datetime(df['order_date'])
 df['month'] = df['order_date'].dt.to_period('M')
-monthly = df.groupby('month')['sales'].sum()
-print(monthly)
+print(df.groupby('month')['sales'].sum())
 `,
     expectedOutput: "完整的销售数据分析报告"
   }
