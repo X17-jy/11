@@ -1,6 +1,5 @@
 name = "data-analysis-education-platform"
 compatibility_date = "2024-01-01"
 
-[pages]
-build_command = "python app.py freeze"
-build_output_dir = "build"
+[vars]
+ENVIRONMENT = "production"
