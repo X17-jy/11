@@ -1,6 +1,8 @@
 {
-  "name": "data-analysis-education-platform",
+  "name": "datainsight",
   "version": "1.0.0",
-  "description": "数据分析在线教育平台",
-  "scripts": {}
+  "description": "商务数据分析在线教育平台",
+  "scripts": {
+    "build": "echo 'Build completed'"
+  }
 }
